@@ -44,9 +44,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <TFT_eSPI.h> // resident ESP Arduino libary, enable in library manager
 
 #include "GaugeWidgets.h"
-// #include <M5Stack.h>
 #include <Free_Fonts.h>
-#include <SavLayFilter.h>
+#include "Button.h"
 
 // includes for web firmware update
 #include <WiFi.h>
@@ -55,6 +54,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <WebServer.h>
 #include <Update.h>
 #include <Preferences.h>
+#include "SerialRead.h"
 Preferences preferences;
 
 WebServer server(80);
@@ -81,6 +81,33 @@ TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite gdraw = TFT_eSprite(&tft);
 
 Gauges myGauges;
+
+#define DEBOUNCE_MS 10
+Button MenuBtn = Button(BUTTON_A, true, DEBOUNCE_MS);
+Button SelectBtn = Button(BUTTON_B, true, DEBOUNCE_MS);
+Button FwdBtn = Button(BUTTON_C, true, DEBOUNCE_MS);
+Button BackBtn = Button(BUTTON_D, true, DEBOUNCE_MS);
+Button X1Btn = Button(BUTTON_X1, true, DEBOUNCE_MS); // Assigns external X1 pin as a digital button input
+Button X2Btn = Button(BUTTON_X2, true, DEBOUNCE_MS); // Assigns external X2 pin as a digital button input
+
+void ButtonUpdate()
+{
+    MenuBtn.read();   
+    SelectBtn.read(); 
+    FwdBtn.read();    
+    BackBtn.read();   
+    X1Btn.read();     
+    X2Btn.read();
+}
+/*
+#define ButtonUpdate  \
+    MenuBtn.read();   \
+    SelectBtn.read(); \
+    FwdBtn.read();    \
+    BackBtn.read();   \
+    X1Btn.read();     \
+    X2Btn.read();
+*/
 
 float AOAThresholds[8]; // old % based tresholds= {0, 39, 41, 55, 65, 66, 79, 80};
 
@@ -183,7 +210,7 @@ int displayPercentLift = 0;
 float displayDecelRate = 0.0;
 
 double iasDerivativeInput;
-SavLayFilter iasDerivative(&iasDerivativeInput, 1, 15); // Computes the first derivative
+// SavLayFilter iasDerivative(&iasDerivativeInput, 1, 15); // Computes the first derivative
 
 unsigned int selectedPort = 0; // selected serial port
 
@@ -206,10 +233,8 @@ void setup()
     //
     // Force backlight off and initialize
     //
-    digitalWrite(TFT_LED_PIN, LOW);
-    pinMode(TFT_LED_PIN, OUTPUT);
-
-    Serial.begin(BITRATE); // USB
+    //digitalWrite(TFT_LED_PIN, LOW);
+    //pinMode(TFT_LED_PIN, OUTPUT);
 
     //
     // Preset outputs
@@ -231,13 +256,11 @@ void setup()
     tft.setRotation(1);
     tft.fillScreen(TFT_BLACK);
 
-    // Init the back-light LED PWM
-    myFlight.BacklightInit(TFT_LED_PIN, DIMMER_CH, DIMMER_FREQ, DIMMER_RES);
-    myFlight.Backlight(0);
-
-    tft.begin();
+    // Init the dimmer PWM
+    ledcAttachPin(TFT_LED_PIN, 4); // attach pin
+    ledcSetup(4, 8192, 12);
     tft.fillScreen(TFT_BLACK);
-    tft.setBrightness(50);
+    ledcWrite(4, 2047);
 
     // mute the speaker (annoying hiss)
     dacWrite(PIN_AUDL, 0); // audio quiet
@@ -253,7 +276,7 @@ void setup()
     uint64_t waitTime = millis();
     while (millis() - waitTime < 3000)
     {
-        ButtonUpdate;
+        ButtonUpdate();
 
         // Button B held down at bootup
         if (SelectBtn.isPressed())
@@ -387,12 +410,12 @@ void setup()
 
 void loop()
 {
-    ButtonUpdate;
+    ButtonUpdate();
 
     if (fwUpdateMode)
     {
         server.handleClient();
-        if (MenuBtn.wasPressed())
+        if (FwdBtn.wasPressed())
         {
             fwUpdateMode = false;
             WiFi.softAPdisconnect(true);
@@ -413,14 +436,24 @@ void loop()
         displayBrightness *= 2; // brightness up
     }
 
-    if (MenuBtn.wasPressed() && (displayBrightness <= 255))
+    if (BackBtn.wasPressed() && (displayBrightness <= 4095))
     {
         displayBrightness /= 2; // brightness down
     }
 
-    displayBrightness = constrain(displayBrightness, 1, 255);
+    displayBrightness = constrain(displayBrightness, 1, 4095);
 
-    tft.setBrightness(displayBrightness);
+    ledcWrite(4, displayBrightness);
+
+    if (MenuBtn.wasPressed())
+    {
+        gdraw.setColorDepth(8);
+        gdraw.createSprite(WIDTH, HEIGHT);
+        gdraw.fillSprite(TFT_BLACK);
+        displayType--;
+        if (displayType < 0)
+            displayType = 4; // type of display
+    }
 
     if (SelectBtn.wasPressed())
     {
@@ -1437,18 +1470,18 @@ void displayGloadHistory()
     gdraw.setFreeFont(FSS12);
     gdraw.setTextColor(TFT_WHITE);
     gdraw.setTextDatum(MR_DATUM);
-    gdraw.drawString("5", 5, 27);
-    gdraw.drawString("4", 5, 53);
-    gdraw.drawString("3", 5, 80);
-    gdraw.drawString("2", 5, 106);
-    gdraw.drawString("1", 5, 133);
-    gdraw.drawString("0", 5, 160);
-    gdraw.drawString("-1", 3, 186);
-    gdraw.drawString("-2", 3, 213);
+    gdraw.drawString("5", 12, 27);
+    gdraw.drawString("4", 12, 53);
+    gdraw.drawString("3", 12, 80);
+    gdraw.drawString("2", 12, 106);
+    gdraw.drawString("1", 12, 133);
+    gdraw.drawString("0", 12, 160);
+    gdraw.drawString("-1", 12, 186);
+    gdraw.drawString("-2", 12, 213);
 
     gdraw.setFreeFont(FSS12);
     gdraw.setTextDatum(MC_DATUM);
-    gdraw.drawString("G-LOAD [1 min]", 160, 8);
+    gdraw.drawString("G-LOAD [1 min]", 160, 12);
 
     // draw gHistory
     int gDisplayIndex = gHistoryIndex;
@@ -1661,21 +1694,21 @@ unsigned int checkSerial()
     String serialString;
 
     // TTL input (including v2 Onspeed with vern's power board)
-    Serial2.begin(115200, SERIAL_8N1, 16, 17, false); // GPIO16 is RX, GPIO17 is TX  (Vern's power board)
+    Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, false); 
     serialString = readSerialbytes();
     Serial2.end();
     if (serialString.indexOf("#1") >= 0)
         return 1;
 
     // rs232 input via power board (including v3 Onspeed)
-    Serial2.begin(115200, SERIAL_8N1, 16, 17, true); // GPIO16 is RX, GPIO17 is TX  (Vern's power board)
+    Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, true); 
     serialString = readSerialbytes();
     Serial2.end();
     if (serialString.indexOf("#1") >= 0)
         return 2;
 
     // simulator demo huVVer with onspeed v3 on pin 9 TTL
-    Serial2.begin(115200, SERIAL_8N1, RX1_PIN, TX1_PIN, false);
+    Serial2.begin(115200, SERIAL_8N1, 22, 17, false);
     serialString = readSerialbytes();
     Serial2.end();
     if (serialString.indexOf("#1") >= 0)
@@ -1716,10 +1749,10 @@ void displaySplashScreen()
 
     gdraw.setFreeFont(FSS9);
     gdraw.drawString("Version: " + String(firmwareVersion), 160, 120);
-    gdraw.drawString("To upgrade press Center button", 160, 220);
+    gdraw.drawString("To upgrade press Select button", 160, 220);
     gdraw.pushSprite(0, 0);
     gdraw.deleteSprite();
-    ButtonUpdate;
+    ButtonUpdate();
 }
 
 // -----------------------------------------------
@@ -1748,25 +1781,25 @@ void serialSetup()
     case 1:
     {
         // TTL input via power board (including v2 Onspeed)
-        Serial2.begin(115200, SERIAL_8N1, 16, 17, false); // GPIO16 is RX, GPIO17 is TX  (Vern's power board)
+        Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, false); 
         Serial.println("GPIO16 is RX, GPIO17 is TX, TTL");
         break;
     }
     case 2:
     {
-        // rs232 input via power board (including v3 Onspeed)
-        Serial2.begin(115200, SERIAL_8N1, 16, 17, true); // GPIO16 is RX, GPIO17 is TX  (Vern's power board)
+        // rs232 input
+        Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, true);
         Serial.println("GPIO16 is RX, GPIO17 is TX, RS232");
         break;
     }
     case 3:
     {
-        // simulator demo M5 with onspeed v3 on pin 9 TTL
-        Serial2.begin(115200, SERIAL_8N1, RX1_PIN, TX1_PIN, false);
-        Serial.println("RX1_PIN is RX, TX1_PIN is TX, TTL");
+        // TTL input
+        Serial2.begin(115200, SERIAL_8N1, 22, 17, false);
+        Serial.println("GPIO22 is RX, GPIO17 is TX, TTL");
         break;
     }
-    case 0:
+    default:
     {
         gdraw.setColorDepth(8);
         gdraw.createSprite(WIDTH, HEIGHT);
