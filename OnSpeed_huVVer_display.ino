@@ -99,15 +99,6 @@ void ButtonUpdate()
     X1Btn.read();     
     X2Btn.read();
 }
-/*
-#define ButtonUpdate  \
-    MenuBtn.read();   \
-    SelectBtn.read(); \
-    FwdBtn.read();    \
-    BackBtn.read();   \
-    X1Btn.read();     \
-    X2Btn.read();
-*/
 
 float AOAThresholds[8]; // old % based tresholds= {0, 39, 41, 55, 65, 66, 79, 80};
 
@@ -257,9 +248,8 @@ void setup()
     tft.fillScreen(TFT_BLACK);
 
     // Init the dimmer PWM
-    ledcAttachPin(TFT_LED_PIN, 4); // attach pin
     ledcSetup(4, 8192, 12);
-    tft.fillScreen(TFT_BLACK);
+    ledcAttachPin(TFT_LED_PIN, 4); // attach pin
     ledcWrite(4, 2047);
 
     // mute the speaker (annoying hiss)
@@ -566,7 +556,7 @@ void loop()
             // gdraw.setFreeFont(FSSB18);
             gdraw.setTextColor(TFT_WHITE);
             gdraw.setCursor(5, 200);
-            gdraw.printf("%1.1f", displayVerticalG);
+            gdraw.printf("%+1.1f", displayVerticalG);
 
             // Update pressure altitude numeric display
             // gdraw.setFreeFont(FSSB18);
@@ -1694,26 +1684,26 @@ unsigned int checkSerial()
     String serialString;
 
     // TTL input (including v2 Onspeed with vern's power board)
-    Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, false); 
+    Serial1.begin(115200, SERIAL_8N1, PIN_RX1, PIN_TX1, false); 
     serialString = readSerialbytes();
-    Serial2.end();
+    Serial1.end();
     if (serialString.indexOf("#1") >= 0)
         return 1;
 
     // rs232 input via power board (including v3 Onspeed)
-    Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, true); 
+    Serial1.begin(115200, SERIAL_8N1, PIN_RX1, PIN_TX1, true); 
     serialString = readSerialbytes();
-    Serial2.end();
+    Serial1.end();
     if (serialString.indexOf("#1") >= 0)
         return 2;
 
     // simulator demo huVVer with onspeed v3 on pin 9 TTL
-    Serial2.begin(115200, SERIAL_8N1, 22, 17, false);
-    serialString = readSerialbytes();
-    Serial2.end();
-    if (serialString.indexOf("#1") >= 0)
-        return 3;
-
+    //Serial1.begin(115200, SERIAL_8N1, 22, 17, false);
+    //serialString = readSerialbytes();
+    //Serial1.end();
+    //if (serialString.indexOf("#1") >= 0)
+    //    return 3;
+//
     return 0;
 }
 
@@ -1727,9 +1717,9 @@ String readSerialbytes()
 
     while (millis() - readSerialTimeout < 5000 && ResultString.length() < 200)
     {
-        if (Serial2.available())
+        if (Serial1.available())
         {
-            inChar = Serial2.read();
+            inChar = Serial1.read();
             ResultString += inChar;
         }
     }
@@ -1762,7 +1752,7 @@ void serialSetup()
     preferences.begin("OnSpeed", false);
     selectedPort = preferences.getUInt("SerialPort", 0);
     unsigned long detectSerialStart = millis();
-
+    
     while (selectedPort == 0 && millis() - detectSerialStart < 30000) // allow 30 seconds to detect serial port
     {
         // check serial port
@@ -1771,34 +1761,34 @@ void serialSetup()
         if (selectedPort != 0)
             preferences.putUInt("SerialPort", selectedPort);
     }
-
+//
     preferences.end();
 
-    // start selected serial port as Serial2
+    // start selected serial port as Serial1
 
     switch (selectedPort)
     {
     case 1:
     {
         // TTL input via power board (including v2 Onspeed)
-        Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, false); 
+        Serial1.begin(115200, SERIAL_8N1, PIN_RX1, PIN_TX1, false); 
         Serial.println("GPIO16 is RX, GPIO17 is TX, TTL");
         break;
     }
     case 2:
     {
-        // rs232 input
-        Serial2.begin(115200, SERIAL_8N1, PIN_RX2, PIN_TX2, true);
-        Serial.println("GPIO16 is RX, GPIO17 is TX, RS232");
+      // rs232 input
+      Serial1.begin(115200, SERIAL_8N1, PIN_RX1, PIN_TX1, true);
+      Serial.println("GPIO16 is RX, GPIO17 is TX, RS232");
         break;
     }
-    case 3:
-    {
-        // TTL input
-        Serial2.begin(115200, SERIAL_8N1, 22, 17, false);
-        Serial.println("GPIO22 is RX, GPIO17 is TX, TTL");
-        break;
-    }
+    //case 3:
+    //{
+    //    // TTL input
+    //    Serial1.begin(115200, SERIAL_8N1, 22, 17, false);
+    //    Serial.println("GPIO22 is RX, GPIO17 is TX, TTL");
+    //    break;
+    //}
     default:
     {
         gdraw.setColorDepth(8);

@@ -1,14 +1,53 @@
 
 // -----------------------------------------------
 
+#include <SavLayFilter.h>
+extern String serialBufferString;
+extern float AOA;
+extern float SmoothedAOA;
+extern int PercentLift;
+extern float Pitch;
+extern float Roll;;
+extern float IAS;;
+extern float Palt;
+extern float iVSI;
+extern float VerticalG;
+extern float LateralG;
+extern float SmoothedLateralG;
+extern float FlightPath;
+extern int FlapPos;
+extern float TurnRate;
+extern int OAT;
+extern int16_t Slip;
+extern float OnSpeedStallWarnAOA;
+extern float OnSpeedSlowAOA;
+extern float OnSpeedFastAOA;
+extern float OnSpeedTonesOnAOA;
+extern float gOnsetRate;
+extern int SpinRecoveryCue;
+extern int DataMark;
+extern float DecelRate;
+extern float SmoothedDecelRate;
+extern float gHistory[];
+extern int gHistoryIndex;
+extern double iasDerivativeInput;
+SavLayFilter iasDerivative(&iasDerivativeInput, 1, 15); // Computes the first derivative
+
+extern const float aoaSmoothingAlpha;    // 1 = max smoothing, 0.01 no smoothing.
+extern const float slipSmoothingAlpha;   // 1 = max smoothing, 0.01 no smoothing.
+extern const float decelSmoothingAlpha;  // 1 = max smoothing, 0.01 no smoothing.
+extern uint64_t serialMillis;
+extern const float serialRate;
+void SerialProcess();
+
 void SerialRead()
 {
 #ifndef DUMMY_SERIAL_DATA
     char inChar;
 
-    if (Serial2.available())
+    if (Serial1.available())
     {
-        inChar=Serial2.read();
+        inChar=Serial1.read();
         if (inChar == '#')
         {
             // reset RX buffer
@@ -202,9 +241,9 @@ void SerialProcess()
 void g3xRead()
 {
     char inChar;
-    if (Serial2.available())
+    if (Serial1.available())
     {
-        inChar=Serial2.read();
+        inChar=Serial1.read();
         if (serialBufferString.length()>=150)
         {
             serialBufferString=""; // prevent buffer overflow;
