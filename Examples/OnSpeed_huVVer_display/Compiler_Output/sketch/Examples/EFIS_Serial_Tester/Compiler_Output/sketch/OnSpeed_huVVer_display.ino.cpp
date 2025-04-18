@@ -1,3 +1,6 @@
+#line 1 "C:\\Users\\vern\\OneDrive\\Desktop\\GW_Archive\\OnSpeed_huVVer_display\\Examples\\EFIS_Serial_Tester\\Compiler_Output\\sketch\\OnSpeed_huVVer_display.ino.cpp"
+#include <Arduino.h>
+#line 1 "C:\\Users\\vern\\OneDrive\\Desktop\\GW_Archive\\OnSpeed_huVVer_display\\OnSpeed_huVVer_display.ino"
 // compiles with ESP32 board library v2.0, does not boot if compiled with previous versions.
 // set board type to HUVVER-AVI
 
@@ -1797,3 +1800,4 @@ void serialSetup()
     }
     } // end switch on selected port
 } // end serialSetup()
+

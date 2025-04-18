@@ -1,8 +1,9 @@
+#line 1 "C:\\Users\\vern\\OneDrive\\Desktop\\GW_Archive\\OnSpeed_huVVer_display\\.vscode\\arduino.json"
 {
     "port": "COM14",
     "configuration": "FlashFreq=80,PartitionScheme=min_spiffs,CPUFreq=240,UploadSpeed=921600,DebugLevel=none,EraseFlash=none",
     "board": "esp32:esp32:d1_mini32",
     "programmer": "esptool",
     "sketch": "OnSpeed_huVVer_display.ino",
-    "output": "\\Compiler_Output"
+    "output": "Examples\\OnSpeed_huVVer_display\\Compiler_Output"
 }

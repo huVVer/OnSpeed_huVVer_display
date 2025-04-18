@@ -1,0 +1,12 @@
+#line 1 "C:\\Users\\vern\\OneDrive\\Desktop\\GW_Archive\\OnSpeed_huVVer_display\\Examples\\EFIS_Serial_Tester\\Compiler_Output\\build.options.json"
+{
+  "additionalFiles": "..\\..\\..,..\\..\\..,..\\..,..\\..,..\\..,..\\..",
+  "builtInToolsFolders": "",
+  "compiler.optimization_flags": "-Os",
+  "customBuildProperties": "",
+  "fqbn": "esp32:esp32:d1_mini32:FlashFreq=80,PartitionScheme=min_spiffs,CPUFreq=240,UploadSpeed=921600,DebugLevel=none,EraseFlash=none",
+  "hardwareFolders": "C:\\Users\\vern\\AppData\\Local\\Arduino15\\packages",
+  "otherLibrariesFolders": "C:\\Users\\vern\\OneDrive\\Documents\\Arduino\\libraries",
+  "runtime.ide.version": "10607",
+  "sketchLocation": "C:\\Users\\vern\\OneDrive\\Desktop\\GW_Archive\\OnSpeed_huVVer_display"
+}
