@@ -44,8 +44,7 @@
 #define BUTTON_E    32  
 #define BUTTON_F    33  
 #define TFT_LED_PIN 15
-#define TOUCH_CS 	13
-//#define TOUCH_CS 	-1
+//#define TOUCH_CS 	13
 
 // ##################################################################################
 //
