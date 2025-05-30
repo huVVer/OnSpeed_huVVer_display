@@ -42,12 +42,10 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include <TFT_eSPI.h> // resident ESP Arduino libary, enable in library manager
-
 #include "GaugeWidgets.h"
-#include <Free_Fonts.h>
 #include "Button.h"
 
-// includes for web firmware update
+// includes for firmware update
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
@@ -254,12 +252,12 @@ void setup()
     displaySplashScreen();
     // duration of splash screen display, check for center button for fw upgrade
     uint64_t waitTime = millis();
-    while (millis() - waitTime < 3000)
+    while (millis() - waitTime < 5000)
     {
         ButtonUpdate();
 
-        // Button B held down at bootup
-        if (SelectBtn.isPressed())
+        // Btn held down at bootup
+        if (MenuBtn.isPressed())
         {
             fwUpdateMode = true;
             gdraw.setColorDepth(8);
@@ -368,7 +366,7 @@ void setup()
                     server.send(404, "text/plain", "FileNotFound");
                 }); // end server.onNotFound()
             break;  // break while loop
-        } // end if Button B is pressed
+        } // end if Btn is pressed
 
     } // end while splash screen
 
@@ -409,14 +407,24 @@ void loop()
     SerialRead(); // get serial data
 
     //
+    // Restart
+    //
+    if (SelectBtn.pressedFor(4000))
+    {
+        displayBrightness = 0; // turn off display
+        ledcWrite(4, displayBrightness);
+        ESP.restart();
+    }
+
+    //
     // Change display brightness and display format using panel buttons.
     //
-    if (FwdBtn.wasPressed() && (displayBrightness > 0))
+    if (SelectBtn.wasPressed() && (displayBrightness > 0))
     {
         displayBrightness *= 2; // brightness up
     }
 
-    if (BackBtn.wasPressed() && (displayBrightness <= 4095))
+    if (MenuBtn.wasPressed() && (displayBrightness <= 4095))
     {
         displayBrightness /= 2; // brightness down
     }
@@ -425,7 +433,7 @@ void loop()
 
     ledcWrite(4, displayBrightness);
 
-    if (MenuBtn.wasPressed())
+    if (BackBtn.wasPressed())
     {
         gdraw.setColorDepth(8);
         gdraw.createSprite(WIDTH, HEIGHT);
@@ -435,7 +443,7 @@ void loop()
             displayType = 4; // type of display
     }
 
-    if (SelectBtn.wasPressed())
+    if (FwdBtn.wasPressed())
     {
         gdraw.setColorDepth(8);
         gdraw.createSprite(WIDTH, HEIGHT);
@@ -1729,7 +1737,8 @@ void displaySplashScreen()
 
     gdraw.setFreeFont(FSS9);
     gdraw.drawString("Version: " + String(firmwareVersion), 160, 120);
-    gdraw.drawString("To upgrade press Select button", 160, 220);
+    gdraw.drawString("To reset, hold Round button", 160, 200); 
+    gdraw.drawString("To upgrade, reset & hold Square button", 160, 220);
     gdraw.pushSprite(0, 0);
     gdraw.deleteSprite();
     ButtonUpdate();

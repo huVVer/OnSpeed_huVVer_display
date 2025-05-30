@@ -3,6 +3,6 @@
     "configuration": "FlashFreq=80,PartitionScheme=min_spiffs,CPUFreq=240,UploadSpeed=921600,DebugLevel=none,EraseFlash=none",
     "board": "esp32:esp32:d1_mini32",
     "programmer": "esptool",
-    "sketch": "OnSpeed_huVVer_display.ino",
+    "sketch": "examples\\OnSpeed_huVVer_display\\OnSpeed_huVVer_display.ino",
     "output": "..\\..\\..\\ArduinoOutput"
 }
