@@ -12,7 +12,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-   GaugeWidgets_M5.h - Library for drawing engine gauges.
+   GaugeWidgets.h - Library for drawing engine gauges.
     by V.R. ("Voltar") Little
     Version 2.0, April 2, 2020
     Version 2.1, July 13, 2020: 
@@ -293,4 +293,4 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         void MarkIndex (float x0, float y0, float barSize, float barWidth, float pointer,                          // PointerType 9 for arc graphs 
                          char tag, float theta, uint16_t color);                                                        
 	};
-  #endif  // _GAUGEWIDGETS_M5_H_ //
+  #endif  // _GAUGEWIDGETS_H_ //
