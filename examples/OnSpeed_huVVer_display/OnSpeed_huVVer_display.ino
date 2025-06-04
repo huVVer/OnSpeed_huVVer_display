@@ -45,7 +45,6 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "GaugeWidgets.h"
 #include "Button.h"
 
-// includes for firmware update
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
@@ -53,6 +52,10 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Update.h>
 #include <Preferences.h>
 #include "SerialRead.h"
+
+// The following library must also be installed using the Arduino library manager
+// https://github.com/jmderomedi/SavitzkyGolayFilter
+
 Preferences preferences;
 
 WebServer server(80);
@@ -63,7 +66,6 @@ bool fwUpdateMode = false;
 uint8_t aiIP[4] = {192, 168, 0, 2};
 
 // Some values from In_eSPI.h for reference
-// Not sure I understand what is going on here
 // #define TFT_BLACK       0x0000      /*   0,   0,   0 */
 // #define TFT_BLUE        0x001F      /*   0,   0, 255 */
 // #define TFT_GREEN       0x07E0      /*   0, 255,   0 */
