@@ -190,7 +190,7 @@ void SerialRead()
         OnSpeedStallWarnAOA = 20.0;
         OnSpeedSlowAOA      = 15.0;
         OnSpeedFastAOA      = 10.0;
-        OnSpeedTonesOnAOA   =  5.0;
+        OnSpeedTonesOnAOA   = 5.0;
         gOnsetRate          = 0.0;
         SpinRecoveryCue     = 0;
         DataMark            = 0;
@@ -222,8 +222,8 @@ void SerialProcess()
 
     // smooth the noisier inputs
     SmoothedLateralG   = SmoothedLateralG * slipSmoothingAlpha+(1-slipSmoothingAlpha)*LateralG;
-//  Slip               = int(SmoothedLateralG * 34 / 0.075); //.075g=half ball, .15g= 1 ball
-    Slip               = int(SmoothedLateralG * 34 / 0.04); 
+//  Slip               = int(SmoothedLateralG * 34 * 13.3333f); //.075g=half ball, .15g= 1 ball
+    Slip               = int(SmoothedLateralG * 34 * 25); 
     Slip               = constrain(Slip,-99,99);
     SmoothedAOA        = SmoothedAOA * aoaSmoothingAlpha + (1-aoaSmoothingAlpha) * AOA;
 

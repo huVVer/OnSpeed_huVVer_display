@@ -72,8 +72,7 @@ uint8_t aiIP[4] = {192, 168, 0, 2};
 // #define TFT_RED         0xF800      /* 255,   0,   0 */
 // #define TFT_WHITE       0xFFFF      /* 255, 255, 255 */
 
-#define TFT_GREY 0x7BEF
-#define TFT_LIGHT_GREY 0xAD55
+// #define TFT_GREY 0x7BEF
 // #define TFT_LIGHT_BLUE  0x867F  // 10000 110011 11111
 #define TFT_LIGHT_BLUE 0x421F // 01000 010000 11111 0100001000011111
 
@@ -243,8 +242,8 @@ void setup()
     ledcWrite(4, 2047);
 
     // mute the speaker (annoying hiss)
-    dacWrite(PIN_AUDL, 0); // audio quiet
-    dacWrite(PIN_AUDR, 0); // audio quiet
+    digitalWrite(PIN_AUDL, LOW); // audio quiet
+    digitalWrite(PIN_AUDR, LOW); // audio quiet
     gdraw.setColorDepth(8);
     gdraw.createSprite(WIDTH, HEIGHT);
     gdraw.fillSprite(TFT_BLACK);
@@ -519,25 +518,25 @@ void loop()
             gdraw.setFreeFont(FSS12);
 
             gdraw.setCursor(5, 60);
-            gdraw.setTextColor(TFT_GREY);
+            gdraw.setTextColor(TFT_LIGHTGREY);
             gdraw.print("IAS");
 
             gdraw.setCursor(5, 230);
-            gdraw.setTextColor(TFT_LIGHT_GREY);
+            gdraw.setTextColor(TFT_LIGHTGREY);
             gdraw.print("G");
 
             gdraw.setCursor(243, 60);
-            gdraw.setTextColor(TFT_GREY);
+            gdraw.setTextColor(TFT_LIGHTGREY);
             gdraw.print("P-ALT");
 
             gdraw.setCursor(260, 230);
-            gdraw.setTextColor(TFT_LIGHT_GREY);
+            gdraw.setTextColor(TFT_LIGHTGREY);
             gdraw.print("AOA");
 
             // update numeric pitch display
             // same font as labels
             // dark background for pitch readability
-            gdraw.fillRoundRect(55, 129, 56, 21, 3, TFT_DARKGREY);
+            gdraw.fillRoundRect(55, 129, 56, 21, 3, TFT_LIGHTGREY);
 
             gdraw.setTextColor(TFT_WHITE);
             char PitchStr[4];
@@ -691,13 +690,13 @@ void displayAOA()
 {
     // Build Setpoint array
     // --------------------
-    AOAThresholds[0] = 0.0001;
-    AOAThresholds[1] = OnSpeedTonesOnAOA - 0.1;
+    AOAThresholds[0] = 0.0001f;
+    AOAThresholds[1] = OnSpeedTonesOnAOA - 0.1f;
     AOAThresholds[2] = OnSpeedTonesOnAOA;
     AOAThresholds[3] = OnSpeedFastAOA;
     AOAThresholds[4] = OnSpeedSlowAOA;
-    AOAThresholds[5] = OnSpeedSlowAOA + 0.1;
-    AOAThresholds[6] = OnSpeedStallWarnAOA - 0.1;
+    AOAThresholds[5] = OnSpeedSlowAOA + 0.1f;
+    AOAThresholds[6] = OnSpeedStallWarnAOA - 0.1f;
     AOAThresholds[7] = OnSpeedStallWarnAOA;
 
     drawAOA(wgtX0, wgtY0, wgtWidth, wgtHeight, SmoothedAOA, flashFlag, AOAThresholds);
@@ -762,7 +761,7 @@ void displayAOA()
 
         // Update flaps display
         // --------------------
-        gdraw.fillCircle(23, 204, 16, TFT_GREY);
+        gdraw.fillCircle(23, 204, 16, TFT_LIGHTGREY);
         // top, bottom, right
         int cX = 23;
         int cY = 204;
@@ -773,7 +772,7 @@ void displayAOA()
         int triangleBottomY = int(cY + cos(FlapPos * PI / 180) * Radius);
         int triangleRightX = int(cX + cos(FlapPos * PI / 180) * (Radius + 33));
         int triangleRightY = int(cY + sin(FlapPos * PI / 180) * (Radius + 33));
-        gdraw.fillTriangle(triangleTopX, triangleTopY, triangleBottomX, triangleBottomY, triangleRightX, triangleRightY, TFT_GREY);
+        gdraw.fillTriangle(triangleTopX, triangleTopY, triangleBottomX, triangleBottomY, triangleRightX, triangleRightY, TFT_LIGHTGREY);
         gdraw.drawPixel(triangleRightX, triangleRightY, TFT_BLACK); // blunt the flap tip 1 pixel
         // gdraw.fillCircle (23, 204, 14, TFT_BLACK);
 
@@ -815,13 +814,13 @@ void displayAOA()
     // vsi ladder, every 20 pixels
     for (int i = 15; i < 226; i = i + 15)
     {
-        gdraw.drawLine(313, i, 319, i, TFT_GREY);
+        gdraw.drawLine(313, i, 319, i, TFT_LIGHTGREY);
     }
 
     // zero line
-    gdraw.drawLine(306, 118, 312, 118, TFT_GREY);
-    gdraw.drawLine(306, 119, 312, 119, TFT_GREY);
-    gdraw.drawLine(306, 120, 312, 120, TFT_GREY);
+    gdraw.drawLine(306, 118, 312, 118, TFT_LIGHTGREY);
+    gdraw.drawLine(306, 119, 312, 119, TFT_LIGHTGREY);
+    gdraw.drawLine(306, 120, 312, 120, TFT_LIGHTGREY);
 
 #if defined(DATAMARK_DISPLAY)
     // Draw Data Mark value
@@ -848,8 +847,8 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     X0 = X0 + W / 2;
     Y0 = Y0 + H / 2; // Adjust datum to center of widget
 
-    gdraw.drawRoundRect(X0 - W / 2, Y0 - H / 2, W, H, 5, TFT_DARKGREY);                 // Gauge bounding box
-    gdraw.drawRoundRect(X0 - W / 2 + 1, Y0 - H / 2 + 1, W - 2, H - 2, 5, TFT_DARKGREY); // Gauge bounding box
+    gdraw.drawRoundRect(X0 - W / 2, Y0 - H / 2, W, H, 5, TFT_LIGHTGREY);                 // Gauge bounding box
+    gdraw.drawRoundRect(X0 - W / 2 + 1, Y0 - H / 2 + 1, W - 2, H - 2, 5, TFT_LIGHTGREY); // Gauge bounding box
 
     int16_t Px0 = -W / 12, Py0 = -H / 4;
     int16_t Px1 = +W / 12, Py1 = H / 4;
@@ -867,7 +866,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     else if (AOA > Array[7] && !flashFlag)
         Colour = TFT_RED;
     else
-        Colour = TFT_DARKGREY;
+        Colour = TFT_LIGHTGREY;
 
     Theta = PI / 8;
     cosTheta = cos(Theta);
@@ -913,7 +912,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= Array[1] && AOA < Array[4])
         Colour = TFT_LIGHT_BLUE; // was TFT_ORANGE
     else
-        Colour = TFT_DARKGREY;
+        Colour = TFT_LIGHTGREY;
 
     Theta = PI / 8;
     cosTheta = cos(Theta);
@@ -967,14 +966,14 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= Array[3] && AOA <= (Array[4] - OnspeedRange * 0.25))
         Colour = TFT_GREEN;
     else
-        Colour = TFT_DARKGREY;
+        Colour = TFT_LIGHTGREY;
     myGauges.drawArc(X0, Y0, ArcRadius, 0.0, PI, Colour, LineWidth);
 
     // Top arc
     if (AOA >= (Array[3] + OnspeedRange * 0.25) && AOA <= Array[4])
         Colour = TFT_GREEN;
     else
-        Colour = TFT_DARKGREY;
+        Colour = TFT_LIGHTGREY;
     myGauges.drawArc(X0, Y0, ArcRadius, PI, PI, Colour, LineWidth);
 
     // Black segments between arcs
@@ -984,7 +983,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= (Array[3] + OnspeedRange * 0.25) && AOA <= (Array[4] - OnspeedRange * 0.25))
         Colour = TFT_GREEN;
     else
-        Colour = TFT_DARKGREY;
+        Colour = TFT_LIGHTGREY;
     gdraw.fillCircle(X0, Y0, bullsEye + 2, Colour);
 
     /*
@@ -1019,9 +1018,13 @@ void drawSlip(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, int16_t Slip, bo
 
     uint16_t Colour = TFT_GREEN;
     if (flashFlag && (abs(Slip) >= 30) && AOA >= Array[7])
+    {
         Colour = TFT_BLACK;
+    }
     if (!flashFlag && (abs(Slip) >= 30) && AOA >= Array[7])
+    {
         Colour = TFT_RED;
+    }
 
     gdraw.fillCircle(CenterX + Slip * (W - H - 1) / 99 / 2, CenterY, H / 2 - 1, Colour);
 
@@ -1357,7 +1360,7 @@ void displayDecelGauge()
     // draw gauge background
     gdraw.fillRoundRect(109, 1, 102, 210, 5, TFT_RED);
     gdraw.fillRect(109, 87, 102, 36, TFT_GREEN);
-    gdraw.drawRoundRect(109, 1, 102, 210, 5, TFT_LIGHT_GREY);
+    gdraw.drawRoundRect(109, 1, 102, 210, 5, TFT_LIGHTGREY);
 
     int decelIndex = int(35.143 * SmoothedDecelRate + 141.48 - 3.5); // 3.5 is half the indexer pointer height
     decelIndex = constrain(decelIndex, 2, 205);
@@ -1377,11 +1380,11 @@ void displayDecelGauge()
     gdraw.drawString("1", 95, 177);
 
     // pips
-    gdraw.drawLine(99, 106, 107, 106, TFT_LIGHT_GREY);
-    gdraw.drawLine(99, 72, 107, 72, TFT_LIGHT_GREY);
-    gdraw.drawLine(99, 36, 107, 36, TFT_LIGHT_GREY);
-    gdraw.drawLine(99, 141, 107, 141, TFT_LIGHT_GREY);
-    gdraw.drawLine(99, 177, 107, 177, TFT_LIGHT_GREY);
+    gdraw.drawLine(99, 106, 107, 106, TFT_LIGHTGREY);
+    gdraw.drawLine(99, 72, 107, 72, TFT_LIGHTGREY);
+    gdraw.drawLine(99, 36, 107, 36, TFT_LIGHTGREY);
+    gdraw.drawLine(99, 141, 107, 141, TFT_LIGHTGREY);
+    gdraw.drawLine(99, 177, 107, 177, TFT_LIGHTGREY);
 
     // iVSI
     // draw iVSI line
@@ -1400,13 +1403,13 @@ void displayDecelGauge()
     // vsi ladder, every 20 pixels
     for (int i = 19; i < 220; i = i + 20)
     {
-        gdraw.drawLine(313, i, 319, i, TFT_LIGHT_GREY);
+        gdraw.drawLine(313, i, 319, i, TFT_LIGHTGREY);
     }
 
     // zero line
-    gdraw.drawLine(306, 118, 312, 118, TFT_LIGHT_GREY);
-    gdraw.drawLine(306, 119, 312, 119, TFT_LIGHT_GREY);
-    gdraw.drawLine(306, 120, 312, 120, TFT_LIGHT_GREY);
+    gdraw.drawLine(306, 118, 312, 118, TFT_LIGHTGREY);
+    gdraw.drawLine(306, 119, 312, 119, TFT_LIGHTGREY);
+    gdraw.drawLine(306, 120, 312, 120, TFT_LIGHTGREY);
 
     // Update ball display
     drawSlip(80, 215, 160, 20, Slip, false, AOAThresholds);
@@ -1447,14 +1450,14 @@ void displayGloadHistory()
     // vertical line
     gdraw.drawLine(19, 0, 19, 239, TFT_WHITE);
 
-    gdraw.drawLine(19, 27, 319, 27, TFT_GREY);
-    gdraw.drawLine(19, 53, 319, 53, TFT_GREY);
-    gdraw.drawLine(19, 80, 319, 80, TFT_GREY);
-    gdraw.drawLine(19, 106, 319, 106, TFT_GREY);
+    gdraw.drawLine(19, 27, 319, 27, TFT_LIGHTGREY);
+    gdraw.drawLine(19, 53, 319, 53, TFT_LIGHTGREY);
+    gdraw.drawLine(19, 80, 319, 80, TFT_LIGHTGREY);
+    gdraw.drawLine(19, 106, 319, 106, TFT_LIGHTGREY);
 
-    gdraw.drawLine(19, 160, 319, 160, TFT_GREY);
-    gdraw.drawLine(19, 186, 319, 186, TFT_GREY);
-    gdraw.drawLine(19, 213, 319, 213, TFT_GREY);
+    gdraw.drawLine(19, 160, 319, 160, TFT_LIGHTGREY);
+    gdraw.drawLine(19, 186, 319, 186, TFT_LIGHTGREY);
+    gdraw.drawLine(19, 213, 319, 213, TFT_LIGHTGREY);
 
     // pips
     gdraw.setFreeFont(FSS12);
