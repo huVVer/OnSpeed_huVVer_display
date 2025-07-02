@@ -761,7 +761,7 @@ void displayAOA()
 
         // Update flaps display
         // --------------------
-        gdraw.fillCircle(23, 204, 16, TFT_LIGHTGREY);
+        gdraw.fillCircle(23, 204, 16, TFT_DARKGREY);
         // top, bottom, right
         int cX = 23;
         int cY = 204;
@@ -772,7 +772,7 @@ void displayAOA()
         int triangleBottomY = int(cY + cos(FlapPos * PI / 180) * Radius);
         int triangleRightX = int(cX + cos(FlapPos * PI / 180) * (Radius + 33));
         int triangleRightY = int(cY + sin(FlapPos * PI / 180) * (Radius + 33));
-        gdraw.fillTriangle(triangleTopX, triangleTopY, triangleBottomX, triangleBottomY, triangleRightX, triangleRightY, TFT_LIGHTGREY);
+        gdraw.fillTriangle(triangleTopX, triangleTopY, triangleBottomX, triangleBottomY, triangleRightX, triangleRightY, TFT_DARKGREY);
         gdraw.drawPixel(triangleRightX, triangleRightY, TFT_BLACK); // blunt the flap tip 1 pixel
         // gdraw.fillCircle (23, 204, 14, TFT_BLACK);
 
@@ -847,8 +847,8 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     X0 = X0 + W / 2;
     Y0 = Y0 + H / 2; // Adjust datum to center of widget
 
-    gdraw.drawRoundRect(X0 - W / 2, Y0 - H / 2, W, H, 5, TFT_LIGHTGREY);                 // Gauge bounding box
-    gdraw.drawRoundRect(X0 - W / 2 + 1, Y0 - H / 2 + 1, W - 2, H - 2, 5, TFT_LIGHTGREY); // Gauge bounding box
+    gdraw.drawRoundRect(X0 - W / 2, Y0 - H / 2, W, H, 5, TFT_DARKGREY);                 // Gauge bounding box
+    gdraw.drawRoundRect(X0 - W / 2 + 1, Y0 - H / 2 + 1, W - 2, H - 2, 5, TFT_DARKGREY); // Gauge bounding box
 
     int16_t Px0 = -W / 12, Py0 = -H / 4;
     int16_t Px1 = +W / 12, Py1 = H / 4;
@@ -866,7 +866,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     else if (AOA > Array[7] && !flashFlag)
         Colour = TFT_RED;
     else
-        Colour = TFT_LIGHTGREY;
+        Colour = TFT_DARKGREY;
 
     Theta = PI / 8;
     cosTheta = cos(Theta);
@@ -912,7 +912,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= Array[1] && AOA < Array[4])
         Colour = TFT_LIGHT_BLUE; // was TFT_ORANGE
     else
-        Colour = TFT_LIGHTGREY;
+        Colour = TFT_DARKGREY;
 
     Theta = PI / 8;
     cosTheta = cos(Theta);
@@ -966,14 +966,14 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= Array[3] && AOA <= (Array[4] - OnspeedRange * 0.25))
         Colour = TFT_GREEN;
     else
-        Colour = TFT_LIGHTGREY;
+        Colour = TFT_DARKGREY;
     myGauges.drawArc(X0, Y0, ArcRadius, 0.0, PI, Colour, LineWidth);
 
     // Top arc
     if (AOA >= (Array[3] + OnspeedRange * 0.25) && AOA <= Array[4])
         Colour = TFT_GREEN;
     else
-        Colour = TFT_LIGHTGREY;
+        Colour = TFT_DARKGREY;
     myGauges.drawArc(X0, Y0, ArcRadius, PI, PI, Colour, LineWidth);
 
     // Black segments between arcs
@@ -983,7 +983,7 @@ void drawAOA(uint16_t X0, uint16_t Y0, uint16_t W, uint16_t H, float AOA, boolea
     if (AOA >= (Array[3] + OnspeedRange * 0.25) && AOA <= (Array[4] - OnspeedRange * 0.25))
         Colour = TFT_GREEN;
     else
-        Colour = TFT_LIGHTGREY;
+        Colour = TFT_DARKGREY;
     gdraw.fillCircle(X0, Y0, bullsEye + 2, Colour);
 
     /*
