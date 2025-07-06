@@ -239,7 +239,7 @@ void setup()
     // Init the dimmer PWM
     ledcSetup(4, 8192, 12);
     ledcAttachPin(TFT_LED_PIN, 4); // attach pin
-    ledcWrite(4, 2047);
+    ledcWrite(4, 4095);
 
     // mute the speaker (annoying hiss)
     digitalWrite(PIN_AUDL, LOW); // audio quiet
