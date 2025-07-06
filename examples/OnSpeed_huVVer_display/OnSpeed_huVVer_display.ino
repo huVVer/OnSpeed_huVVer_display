@@ -561,7 +561,7 @@ void loop()
             // gdraw.setFreeFont(FSSB18);
             gdraw.setTextColor(TFT_BLACK);
             gdraw.setTextDatum(MR_DATUM);
-            char PressAltStr[5];
+            char PressAltStr[10];
             sprintf(PressAltStr, "%5.0f", displayPalt);
             gdraw.drawString(PressAltStr, 309, 18);
 
@@ -1293,8 +1293,8 @@ void pitchGraph(int16_t pitch, int16_t roll, int16_t px0, int16_t py0, uint8_t s
      Establish a horizontal baseline segment
      */
 
-    float px1, px2, px3, px4, px5;
-    float py1, py2, py3, py4, py5;
+    float px1, px2, px3, px4;
+    float py1, py2, py3, py4;
     float xRotate;
     float yRotate;
 
@@ -1620,7 +1620,6 @@ void handleUpgradeSuccess()
         "<div align=\"center\">\n";
     "<progress id=\"rebootprogress\" max=\"100\" value=\"0\"> 0% </progress>\n";
     "</div>\n";
-
     page += "</body></html>\n";
     server.send(200, "text/html", page);
 }
