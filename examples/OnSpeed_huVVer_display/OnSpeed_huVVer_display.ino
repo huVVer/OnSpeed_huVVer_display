@@ -123,10 +123,10 @@ uint64_t numbersUpdateTime;
 uint64_t serialMillis = millis();
 uint64_t gHistoryTime = millis();
 #ifndef REPEATER_MODE
-uint16_t displayBrightness = 255;
+uint16_t displayBrightness = 4095;
 int16_t displayType = 0;
 #else
-uint16_t displayBrightness = 4;
+uint16_t displayBrightness = 64;
 int16_t displayType = 0;
 #endif
 boolean numericDisplay;
