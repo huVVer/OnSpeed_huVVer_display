@@ -1,5 +1,5 @@
 /*
-Copyright 2021 V.R. Little
+Copyright 2021-2025 V.R. Little
 
 Permission is hereby granted, free of charge, to any person provided a copy of this software and associated documentation files
 (the "Software") to use, copy, modify, or merge copies of the Software for non-commercial purposes, subject to the following conditions:

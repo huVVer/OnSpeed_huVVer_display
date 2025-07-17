@@ -1,5 +1,5 @@
 /*
-Copyright 2020, 2021, 2022 V.R. Little
+Copyright 2020-2025 V.R. Little
 
 Permission is hereby granted, free of charge, to any person provided a copy of this software and associated documentation files
 (the "Software") to use, copy, modify, or merge copies of the Software for non-commercial purposes, subject to the following conditions:
@@ -59,7 +59,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <printNum> allows the printing of scalable, rotatable numbers and common arithmetical symbols.
 
    Library Variables:
-    See GaugeWidgets_huVVer.h file for a complete listing of library variables.
+    See GaugeWidgets.h file for a complete listing of library variables.
 */
 
 #include "GaugeWidgets.h"
